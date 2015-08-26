@@ -371,41 +371,41 @@ class Connection(object):
             if not os.path.exists(dirname):
                 os.makedirs(dirname)
 
-            KEY_LOCK = open(lockfile, 'w')
-            fcntl.lockf(KEY_LOCK, fcntl.LOCK_EX)
+            with open(lockfile, 'w') as KEY_LOCK:
+                fcntl.lockf(KEY_LOCK, fcntl.LOCK_EX)
 
-            try:
-                # just in case any were added recently
+                try:
+                    # just in case any were added recently
 
-                self.ssh.load_system_host_keys()
-                self.ssh._host_keys.update(self.ssh._system_host_keys)
+                    self.ssh.load_system_host_keys()
+                    self.ssh._host_keys.update(self.ssh._system_host_keys)
 
-                # gather information about the current key file, so
-                # we can ensure the new file has the correct mode/owner
+                    # gather information about the current key file, so
+                    # we can ensure the new file has the correct mode/owner
 
-                key_dir  = os.path.dirname(self.keyfile)
-                key_stat = os.stat(self.keyfile)
+                    key_dir  = os.path.dirname(self.keyfile)
+                    key_stat = os.stat(self.keyfile)
 
-                # Save the new keys to a temporary file and move it into place
-                # rather than rewriting the file. We set delete=False because
-                # the file will be moved into place rather than cleaned up.
+                    # Save the new keys to a temporary file and move it into place
+                    # rather than rewriting the file. We set delete=False because
+                    # the file will be moved into place rather than cleaned up.
 
-                tmp_keyfile = tempfile.NamedTemporaryFile(dir=key_dir, delete=False)
-                os.chmod(tmp_keyfile.name, key_stat.st_mode & 07777)
-                os.chown(tmp_keyfile.name, key_stat.st_uid, key_stat.st_gid)
+                    tmp_keyfile = tempfile.NamedTemporaryFile(dir=key_dir, delete=False)
+                    os.chmod(tmp_keyfile.name, key_stat.st_mode & 07777)
+                    os.chown(tmp_keyfile.name, key_stat.st_uid, key_stat.st_gid)
 
-                self._save_ssh_host_keys(tmp_keyfile.name)
-                tmp_keyfile.close()
+                    self._save_ssh_host_keys(tmp_keyfile.name)
+                    tmp_keyfile.close()
 
-                os.rename(tmp_keyfile.name, self.keyfile)
+                    os.rename(tmp_keyfile.name, self.keyfile)
 
-            except:
+                except:
 
-                # unable to save keys, including scenario when key was invalid
-                # and caught earlier
-                traceback.print_exc()
-                pass
-            fcntl.lockf(KEY_LOCK, fcntl.LOCK_UN)
+                    # unable to save keys, including scenario when key was invalid
+                    # and caught earlier
+                    traceback.print_exc()
+                    pass
+                fcntl.lockf(KEY_LOCK, fcntl.LOCK_UN)
 
         self.ssh.close()
 

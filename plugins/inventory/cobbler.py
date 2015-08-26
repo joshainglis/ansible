@@ -236,8 +236,8 @@ class CobblerInventory(object):
     def load_cache_from_cache(self):
         """ Reads the cache from the cache file sets self.cache """
 
-        cache = open(self.cache_path_cache, 'r')
-        json_cache = cache.read()
+        with open(self.cache_path_cache, 'r') as cache:
+            json_cache = cache.read()
         self.cache = json.loads(json_cache)
 
     def write_to_cache(self, data, filename):

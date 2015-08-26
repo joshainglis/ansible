@@ -97,7 +97,8 @@ class LookupModule(object):
                     os.chmod(path, 0600)
                     f.write(content + '\n')
             else:
-                content = open(path).read().rstrip()
+                with open(path) as f:
+                    content = f.read().rstrip()
                 sep = content.find(' ')
 
                 if sep >= 0:

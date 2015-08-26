@@ -77,7 +77,8 @@ def spacewalk_report(name):
             p = subprocess.Popen([SW_REPORT, name], stdout=fh)
         p.wait()
 
-    lines = open(cache_filename, 'r').readlines()
+    with open(cache_filename, 'r') as f:
+        lines = f.readlines()
     keys = lines[0].strip().split(',')
     for line in lines[1:]:
         values = line.strip().split(',')

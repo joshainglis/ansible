@@ -350,17 +350,17 @@ class ActionModule(object):
                 diff['before_header'] = destination
                 diff['before'] = dest_contents
 
-        src = open(source)
-        src_contents = src.read(8192)
-        st = os.stat(source)
-        if "\x00" in src_contents:
-            diff['src_binary'] = 1
-        elif st[stat.ST_SIZE] > utils.MAX_FILE_SIZE_FOR_DIFF:
-            diff['src_larger'] = utils.MAX_FILE_SIZE_FOR_DIFF
-        else:
-            src.seek(0)
-            diff['after_header'] = source
-            diff['after'] = src.read()
+        with open(source) as src:
+            src_contents = src.read(8192)
+            st = os.stat(source)
+            if "\x00" in src_contents:
+                diff['src_binary'] = 1
+            elif st[stat.ST_SIZE] > utils.MAX_FILE_SIZE_FOR_DIFF:
+                diff['src_larger'] = utils.MAX_FILE_SIZE_FOR_DIFF
+            else:
+                src.seek(0)
+                diff['after_header'] = source
+                diff['after'] = src.read()
 
         return diff
 

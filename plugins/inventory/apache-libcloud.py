@@ -311,8 +311,8 @@ class LibcloudInventory(object):
         Reads the index from the cache file sets self.index
         '''
 
-        cache = open(self.cache_path_index, 'r')
-        json_index = cache.read()
+        with open(self.cache_path_index, 'r') as cache:
+            json_index = cache.read()
         self.index = json.loads(json_index)
 
     def write_to_cache(self, data, filename):

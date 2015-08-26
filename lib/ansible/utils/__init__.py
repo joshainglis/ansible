@@ -757,7 +757,8 @@ def parse_yaml_from_file(path, vault_password=None):
     show_content = True
 
     try:
-        data = open(path).read()
+        with open(path) as f:
+            data = f.read()
     except IOError:
         raise errors.AnsibleError("file could not read: %s" % path)
 

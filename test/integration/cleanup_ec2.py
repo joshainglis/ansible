@@ -23,10 +23,11 @@ def delete_aws_eips(get_func, attr, opts):
 
     # the file might not be there if the integration test wasn't run
     try:
-      eip_log = open(opts.eip_log, 'r').read().splitlines()
+        with open(opts.eip_log, 'r') as f:
+            eip_log = f.read().splitlines()
     except IOError:
-      print opts.eip_log, 'not found.'
-      return
+        print opts.eip_log, 'not found.'
+        return
 
     for item in get_func():
         val = getattr(item, attr)

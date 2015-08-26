@@ -411,8 +411,8 @@ class CollinsInventory(object):
         """ Reads the cache from the cache file sets self.cache """
 
         try:
-            cache = open(self.cache_path_cache, 'r')
-            json_cache = cache.read()
+            with open(self.cache_path_cache, 'r') as cache:
+                json_cache = cache.read()
             self.cache = json.loads(json_cache)
             return True
         except:

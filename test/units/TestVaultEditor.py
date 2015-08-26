@@ -39,7 +39,8 @@ class TestVaultEditor(TestCase):
 
     def _is_fips(self):
         try:
-            data = open('/proc/sys/crypto/fips_enabled').read().strip()
+            with open('/proc/sys/crypto/fips_enabled') as f:
+                data = f.read().strip()
         except:
             return False
         if data != '1':
