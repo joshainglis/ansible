@@ -318,17 +318,15 @@ class VaultEditor(object):
         self.write_data(enc_data, self.filename)
 
     def read_data(self, filename):
-        f = open(filename, "rb")
-        tmpdata = f.read()
-        f.close()
+        with open(filename, "rb") as f:
+            tmpdata = f.read()
         return tmpdata
 
     def write_data(self, data, filename):
         if os.path.isfile(filename): 
             os.remove(filename)
-        f = open(filename, "wb")
-        f.write(data)
-        f.close()
+        with open(filename, "wb") as f:
+            f.write(data)
 
     def shuffle_files(self, src, dest):
         # overwrite dest with src

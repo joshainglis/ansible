@@ -339,25 +339,19 @@ class Connection(object):
         if not os.path.exists(path):
             os.makedirs(path)
 
-        f = open(filename, 'w')
+        with open(filename, 'w') as f:
+            for hostname, keys in self.ssh._host_keys.iteritems():
+                for keytype, key in keys.iteritems():
+                    # was f.write
+                    added_this_time = getattr(key, '_added_by_ansible_this_time', False)
+                    if not added_this_time:
+                        f.write("%s %s %s\n" % (hostname, keytype, key.get_base64()))
 
-        for hostname, keys in self.ssh._host_keys.iteritems():
-
-            for keytype, key in keys.iteritems():
-
-                # was f.write
-                added_this_time = getattr(key, '_added_by_ansible_this_time', False)
-                if not added_this_time:
-                    f.write("%s %s %s\n" % (hostname, keytype, key.get_base64()))
-
-        for hostname, keys in self.ssh._host_keys.iteritems():
-
-            for keytype, key in keys.iteritems():
-                added_this_time = getattr(key, '_added_by_ansible_this_time', False)
-                if added_this_time:
-                    f.write("%s %s %s\n" % (hostname, keytype, key.get_base64()))
-
-        f.close()
+            for hostname, keys in self.ssh._host_keys.iteritems():
+                for keytype, key in keys.iteritems():
+                    added_this_time = getattr(key, '_added_by_ansible_this_time', False)
+                    if added_this_time:
+                        f.write("%s %s %s\n" % (hostname, keytype, key.get_base64()))
 
     def close(self):
         ''' terminate the connection '''

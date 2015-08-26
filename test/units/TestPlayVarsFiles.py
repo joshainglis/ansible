@@ -73,9 +73,8 @@ class TestMe(unittest.TestCase):
 
         # make a vars file
         fd, temp_path = mkstemp()
-        f = open(temp_path, "wb")
-        f.write("foo: bar\n")
-        f.close()
+        with open(temp_path, "wb") as f:
+            f.write("foo: bar\n")
 
         # create a play with a vars_file
         playbook = FakePlayBook()
@@ -93,9 +92,8 @@ class TestMe(unittest.TestCase):
 
         # make a vars file
         fd, temp_path = mkstemp()
-        f = open(temp_path, "wb")
-        f.write("foo: bar\n")
-        f.close()
+        with open(temp_path, "wb") as f:
+            f.write("foo: bar\n")
 
         # create a play with a string for vars_files
         playbook = FakePlayBook()
@@ -116,15 +114,13 @@ class TestMe(unittest.TestCase):
 
         # make a vars file
         fd, temp_path = mkstemp()
-        f = open(temp_path, "wb")
-        f.write("foo: bar\n")
-        f.close()
+        with open(temp_path, "wb") as f:
+            f.write("foo: bar\n")
 
         # make a second vars file
         fd, temp_path2 = mkstemp()
-        f = open(temp_path2, "wb")
-        f.write("baz: bang\n")
-        f.close()
+        with open(temp_path2, "wb") as f:
+            f.write("baz: bang\n")
 
 
         # create a play with two vars_files
@@ -146,9 +142,8 @@ class TestMe(unittest.TestCase):
 
         # make a vars file
         fd, temp_path = mkstemp()
-        f = open(temp_path, "wb")
-        f.write("foo: bar\n")
-        f.close()
+        with open(temp_path, "wb") as f:
+            f.write("foo: bar\n")
 
         # get a random file path        
         fd, temp_path2 = mkstemp()
@@ -171,15 +166,13 @@ class TestMe(unittest.TestCase):
 
         # make a vars file
         fd, temp_path = mkstemp()
-        f = open(temp_path, "wb")
-        f.write("foo: bar\n")
-        f.close()
+        with open(temp_path, "wb") as f:
+            f.write("foo: bar\n")
 
         # make a second vars file
         fd, temp_path2 = mkstemp()
-        f = open(temp_path2, "wb")
-        f.write("baz: bang\n")
-        f.close()
+        with open(temp_path2, "wb") as f:
+            f.write("baz: bang\n")
 
         # create a play
         playbook = FakePlayBook()
@@ -199,9 +192,8 @@ class TestMe(unittest.TestCase):
 
         # make a vars file
         fd, temp_path = mkstemp()
-        f = open(temp_path, "wb")
-        f.write("foo: bar\n")
-        f.close()
+        with open(temp_path, "wb") as f:
+            f.write("foo: bar\n")
 
         # make a second vars file
         fd, temp_path2 = mkstemp()
@@ -249,9 +241,8 @@ class TestMe(unittest.TestCase):
 
         # make a vars file
         fd, temp_path = mkstemp()
-        f = open(temp_path, "wb")
-        f.write("foo: bar\n")
-        f.close()
+        with open(temp_path, "wb") as f:
+            f.write("foo: bar\n")
 
         # build play attributes
         playbook = FakePlayBook()
@@ -285,9 +276,8 @@ class TestMe(unittest.TestCase):
 
         # make a temp file
         fd, temp_file = mkstemp(dir=temp_dir)
-        f = open(temp_file, "wb")
-        f.write("foo: bar\n")
-        f.close()
+        with open(temp_file, "wb") as f:
+            f.write("foo: bar\n")
 
         # build play attributes
         playbook = FakePlayBook()
@@ -320,9 +310,8 @@ class TestMe(unittest.TestCase):
 
         # make a temp file
         fd, temp_file = mkstemp(dir=temp_dir)
-        f = open(temp_file, "wb")
-        f.write("foo: bar\n")
-        f.close()
+        with open(temp_file, "wb") as f:
+            f.write("foo: bar\n")
 
         # build play attributes
         playbook = FakePlayBook()
@@ -359,9 +348,8 @@ class TestMe(unittest.TestCase):
 
         # make a temp file
         fd, temp_file = mkstemp(dir=temp_dir)
-        f = open(temp_file, "wb")
-        f.write("foo: bar\n")
-        f.close()
+        with open(temp_file, "wb") as f:
+            f.write("foo: bar\n")
 
         # build play attributes
         playbook = FakePlayBook()

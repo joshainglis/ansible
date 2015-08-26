@@ -78,9 +78,8 @@ class TestVaultEditor(TestCase):
             error_hit = True
 
         # verify decrypted content
-        f = open(filename, "rb")
-        fdata = f.read()
-        f.close()
+        with open(filename, "rb") as f:
+            fdata = f.read()
 
         shutil.rmtree(dirpath)
         assert error_hit == False, "error decrypting 1.0 file"            
@@ -103,9 +102,8 @@ class TestVaultEditor(TestCase):
             error_hit = True
 
         # verify decrypted content
-        f = open(filename, "rb")
-        fdata = f.read()
-        f.close()
+        with open(filename, "rb") as f:
+            fdata = f.read()
 
         shutil.rmtree(dirpath)
         assert error_hit == False, "error decrypting 1.1 file with newline in password"
@@ -129,9 +127,8 @@ class TestVaultEditor(TestCase):
             error_hit = True
 
         # verify decrypted content
-        f = open(filename, "rb")
-        fdata = f.read()
-        f.close()
+        with open(filename, "rb") as f:
+            fdata = f.read()
 
         shutil.rmtree(dirpath)
         assert error_hit == False, "error decrypting 1.1 file"
@@ -157,9 +154,8 @@ class TestVaultEditor(TestCase):
             error_hit = True
 
         # verify decrypted content
-        f = open(filename, "rb")
-        fdata = f.read()
-        f.close()
+        with open(filename, "rb") as f:
+            fdata = f.read()
 
         shutil.rmtree(dirpath)
         assert error_hit == False, "error rekeying 1.0 file to 1.1"            

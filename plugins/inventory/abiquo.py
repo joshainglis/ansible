@@ -73,9 +73,8 @@ def save_cache(data, config):
     ''' saves item to cache '''
     dpath = config.get('cache','cache_dir')
     try:
-        cache = open('/'.join([dpath,'inventory']), 'w')
-        cache.write(json.dumps(data))
-        cache.close()
+        with open('/'.join([dpath,'inventory']), 'w') as cache:
+            cache.write(json.dumps(data))
     except IOError, e:
         pass # not really sure what to do here
 
@@ -85,9 +84,8 @@ def get_cache(cache_item, config):
     dpath = config.get('cache','cache_dir')
     inv = {}
     try:
-        cache = open('/'.join([dpath,'inventory']), 'r')
-        inv = cache.read()
-        cache.close()
+        with open('/'.join([dpath,'inventory']), 'r') as cache:
+            inv = cache.read()
     except IOError, e:
         pass # not really sure what to do here
 

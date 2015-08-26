@@ -330,36 +330,35 @@ class Connection(object):
         if self.send_data(data):
             raise AnsibleError("failed to initiate the file fetch with %s" % self.host)
 
-        fh = open(out_path, "w")
-        try:
+        with open(out_path, "w") as fh:
             bytes = 0
-            while True:
+            try:
+                while True:
+                    response = self.recv_data()
+                    if not response:
+                        raise AnsibleError("Failed to get a response from %s" % self.host)
+                    response = utils.decrypt(self.key, response)
+                    response = utils.parse_json(response)
+                    if response.get('failed', False):
+                        raise AnsibleError("Error during file fetch, aborting")
+                    out = base64.b64decode(response['data'])
+                    fh.write(out)
+                    bytes += len(out)
+                    # send an empty response back to signify we
+                    # received the last chunk without errors
+                    data = utils.jsonify(dict())
+                    data = utils.encrypt(self.key, data)
+                    if self.send_data(data):
+                        raise AnsibleError("failed to send ack during file fetch")
+                    if response.get('last', False):
+                        break
+            finally:
+                # we don't currently care about this final response,
+                # we just receive it and drop it. It may be used at some
+                # point in the future or we may just have the put/fetch
+                # operations not send back a final response at all
                 response = self.recv_data()
-                if not response:
-                    raise AnsibleError("Failed to get a response from %s" % self.host)
-                response = utils.decrypt(self.key, response)
-                response = utils.parse_json(response)
-                if response.get('failed', False):
-                    raise AnsibleError("Error during file fetch, aborting")
-                out = base64.b64decode(response['data'])
-                fh.write(out)
-                bytes += len(out)
-                # send an empty response back to signify we 
-                # received the last chunk without errors
-                data = utils.jsonify(dict())
-                data = utils.encrypt(self.key, data)
-                if self.send_data(data):
-                    raise AnsibleError("failed to send ack during file fetch")
-                if response.get('last', False):
-                    break
-        finally:
-            # we don't currently care about this final response,
-            # we just receive it and drop it. It may be used at some
-            # point in the future or we may just have the put/fetch
-            # operations not send back a final response at all
-            response = self.recv_data()
-            vvv("FETCH wrote %d bytes to %s" % (bytes, out_path))
-            fh.close()
+                vvv("FETCH wrote %d bytes to %s" % (bytes, out_path))
 
     def close(self):
         ''' terminate the connection '''

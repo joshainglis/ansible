@@ -124,9 +124,8 @@ class TestVaultEditor(unittest.TestCase):
             error_hit = True
 
         # verify decrypted content
-        f = open(v10_file.name, "rb")
-        fdata = f.read()
-        f.close()
+        with open(v10_file.name, "rb") as f:
+            fdata = f.read()
 
         os.unlink(v10_file.name)
 
@@ -152,9 +151,8 @@ class TestVaultEditor(unittest.TestCase):
             error_hit = True
 
         # verify decrypted content
-        f = open(v11_file.name, "rb")
-        fdata = f.read()
-        f.close()
+        with open(v11_file.name, "rb") as f:
+            fdata = f.read()
 
         os.unlink(v11_file.name)
 
@@ -180,9 +178,8 @@ class TestVaultEditor(unittest.TestCase):
             error_hit = True
 
         # verify decrypted content
-        f = open(v10_file.name, "rb")
-        fdata = f.read()
-        f.close()
+        with open(v10_file.name, "rb") as f:
+            fdata = f.read()
 
         assert error_hit == False, "error rekeying 1.0 file to 1.1"            
 

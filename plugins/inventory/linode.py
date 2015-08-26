@@ -296,22 +296,21 @@ class LinodeInventory(object):
 
     def get_inventory_from_cache(self):
         """Reads the inventory from the cache file and returns it as a JSON object."""
-        cache = open(self.cache_path_cache, 'r')
-        json_inventory = cache.read()
+        with open(self.cache_path_cache, 'r') as cache:
+            json_inventory = cache.read()
         return json_inventory
 
     def load_index_from_cache(self):
         """Reads the index from the cache file and sets self.index."""
-        cache = open(self.cache_path_index, 'r')
-        json_index = cache.read()
+        with open(self.cache_path_index, 'r') as cache:
+            json_index = cache.read()
         self.index = json.loads(json_index)
 
     def write_to_cache(self, data, filename):
         """Writes data in JSON format to a file."""
         json_data = self.json_format_dict(data, True)
-        cache = open(filename, 'w')
-        cache.write(json_data)
-        cache.close()
+        with open(filename, 'w') as cache:
+            cache.write(json_data)
 
     def to_safe(self, word):
         """Escapes any characters that would be invalid in an ansible group name."""

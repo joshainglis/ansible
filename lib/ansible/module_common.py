@@ -77,9 +77,8 @@ class ModuleReplacer(object):
     def slurp(self, path):
         if not os.path.exists(path):
             raise errors.AnsibleError("imported module support code does not exist at %s" % path)
-        fd = open(path)
-        data = fd.read()
-        fd.close()
+        with open(path) as fd:
+            data = fd.read()
         return data
 
     def _find_snippet_imports(self, module_data, module_path):

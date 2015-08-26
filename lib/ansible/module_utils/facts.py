@@ -2651,24 +2651,18 @@ class SunOSVirtual(Virtual):
 def get_file_content(path, default=None, strip=True):
     data = default
     if os.path.exists(path) and os.access(path, os.R_OK):
-        try:
-            datafile = open(path)
+        with open(path) as datafile:
             data = datafile.read()
             if strip:
                 data = data.strip()
             if len(data) == 0:
                 data = default
-        finally:
-            datafile.close()
     return data
 
 def get_file_lines(path):
     '''file.readlines() that closes the file'''
-    datafile = open(path)
-    try:
+    with open(path) as datafile:
         return datafile.readlines()
-    finally:
-        datafile.close()
 
 def ansible_facts(module):
     facts = {}

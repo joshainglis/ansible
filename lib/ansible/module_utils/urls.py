@@ -470,10 +470,9 @@ class SSLValidationHandler(urllib2.BaseHandler):
                     full_path = os.path.join(path, f)
                     if os.path.isfile(full_path) and os.path.splitext(f)[1] in ('.crt','.pem'):
                         try:
-                            cert_file = open(full_path, 'r')
-                            os.write(tmp_fd, cert_file.read())
-                            os.write(tmp_fd, '\n')
-                            cert_file.close()
+                            with open(full_path, 'r') as cert_file:
+                                os.write(tmp_fd, cert_file.read())
+                                os.write(tmp_fd, '\n')
                         except:
                             pass
 

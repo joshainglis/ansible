@@ -149,9 +149,8 @@ def key_for_hostname(hostname):
     else:
         if stat.S_IMODE(os.stat(key_path).st_mode) != int(C.ACCELERATE_KEYS_FILE_PERMS, 8):
             raise errors.AnsibleError('Incorrect permissions on the key file for this host. Use `chmod 0%o %s` to correct this issue.' % (int(C.ACCELERATE_KEYS_FILE_PERMS, 8), key_path))
-        fh = open(key_path)
-        key = AesKey.Read(fh.read())
-        fh.close()
+        with open(key_path) as fh:
+            key = AesKey.Read(fh.read())
         return key
 
 def encrypt(key, msg):
@@ -183,9 +182,8 @@ def read_vault_file(vault_password_file):
             vault_pass = stdout.strip('\r\n')
         else:
             try:
-                f = open(this_path, "rb")
-                vault_pass=f.read().strip()
-                f.close()
+                with open(this_path, "rb") as f:
+                    vault_pass=f.read().strip()
             except (OSError, IOError), e:
                 raise errors.AnsibleError("Could not read %s: %s" % (this_path, e))
 
@@ -229,9 +227,8 @@ def write_tree_file(tree, hostname, buf):
     # TODO: might be nice to append playbook runs per host in a similar way
     # in which case, we'd want append mode.
     path = os.path.join(tree, hostname)
-    fd = open(path, "w+")
-    fd.write(buf)
-    fd.close()
+    with open(path, "w+") as fd:
+        fd.write(buf)
 
 def is_failed(result):
     ''' is a given JSON result a failed result? '''
@@ -849,14 +846,14 @@ def _git_repo_info(repo_path):
                     repo_path = os.path.join(repo_path[:-4], gitdir)
             except (IOError, AttributeError):
                 return ''
-        f = open(os.path.join(repo_path, "HEAD"))
-        branch = f.readline().split('/')[-1].rstrip("\n")
-        f.close()
+        with open(os.path.join(repo_path, "HEAD")) as f:
+            branch = f.readline().split('/')[-1].rstrip("\n")
+
         branch_path = os.path.join(repo_path, "refs", "heads", branch)
         if os.path.exists(branch_path):
-            f = open(branch_path)
-            commit = f.readline()[:10]
-            f.close()
+            with open(branch_path) as f:
+                commit = f.readline()[:10]
+
         else:
             # detached HEAD
             commit = branch[:10]
@@ -882,16 +879,16 @@ def _gitinfo():
     submodules = os.path.join(basedir, '.gitmodules')
     if not os.path.exists(submodules):
        return result
-    f = open(submodules)
-    for line in f:
-        tokens = line.strip().split(' ')
-        if tokens[0] == 'path':
-            submodule_path = tokens[2]
-            submodule_info =_git_repo_info(os.path.join(basedir, submodule_path, '.git'))
-            if not submodule_info:
-                submodule_info = ' not found - use git submodule update --init ' + submodule_path
-            result += "\n  {0}: {1}".format(submodule_path, submodule_info)
-    f.close()
+    with open(submodules) as f:
+        for line in f:
+            tokens = line.strip().split(' ')
+            if tokens[0] == 'path':
+                submodule_path = tokens[2]
+                submodule_info =_git_repo_info(os.path.join(basedir, submodule_path, '.git'))
+                if not submodule_info:
+                    submodule_info = ' not found - use git submodule update --init ' + submodule_path
+                result += "\n  {0}: {1}".format(submodule_path, submodule_info)
+
     return result
 
 

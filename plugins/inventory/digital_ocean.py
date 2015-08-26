@@ -425,29 +425,23 @@ or environment variables (DO_CLIENT_ID and DO_API_KEY)'''
                 return True
         return False
 
-
     def load_from_cache(self):
         ''' Reads the data from the cache file and assigns it to member variables as Python Objects'''
-        cache = open(self.cache_filename, 'r')
-        json_data = cache.read()
-        cache.close()
+        with open(self.cache_filename, 'r') as cache:
+            json_data = cache.read()
         data = json.loads(json_data)
 
         self.data = data['data']
         self.inventory = data['inventory']
         self.index = data['index']
 
-
     def write_to_cache(self):
         ''' Writes data in JSON format to a file '''
         data = { 'data': self.data, 'index': self.index, 'inventory': self.inventory }
         json_data = json.dumps(data, sort_keys=True, indent=2)
 
-        cache = open(self.cache_filename, 'w')
-        cache.write(json_data)
-        cache.close()
-
-
+        with open(self.cache_filename, 'w') as cache:
+            cache.write(json_data)
 
     ###########################################################################
     # Utilities

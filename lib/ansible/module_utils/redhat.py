@@ -66,9 +66,8 @@ class RegistrationBase(object):
                 cfg.set('main', 'enabled', 1)
             else:
                 cfg.set('main', 'enabled', 0)
-            fd = open(plugin_conf, 'rwa+')
-            cfg.write(fd)
-            fd.close()
+            with open(plugin_conf, 'rwa+') as fd:
+                cfg.write(fd)
 
     def subscribe(self, **kwargs):
         raise NotImplementedError("Must be implemented by a sub-class")

@@ -45,9 +45,8 @@ def log(host, category, data):
 
     path = os.path.join("/var/log/ansible/hosts", host)
     now = time.strftime(TIME_FORMAT, time.localtime())
-    fd = open(path, "a")
-    fd.write(MSG_FORMAT % dict(now=now, category=category, data=data))
-    fd.close()
+    with open(path, "a") as fd:
+        fd.write(MSG_FORMAT % dict(now=now, category=category, data=data))
 
 class CallbackModule(object):
     """

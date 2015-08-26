@@ -50,9 +50,8 @@ _SNIPPET_PATH = os.path.join(os.path.dirname(__file__), '..', 'module_utils')
 def _slurp(path):
     if not os.path.exists(path):
         raise AnsibleError("imported module support code does not exist at %s" % path)
-    fd = open(path)
-    data = fd.read()
-    fd.close()
+    with open(path) as fd:
+        data = fd.read()
     return data
 
 def _find_snippet_imports(module_data, module_path, strip_comments):

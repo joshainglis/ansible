@@ -221,14 +221,12 @@ class Connection(object):
                 hfiles_not_found += 1
                 continue
             try:
-                host_fh = open(hf)
+                with open(hf) as host_fh:
+                    data = host_fh.read()
             except IOError, e:
                 hfiles_not_found += 1
                 continue
-            else:
-                data = host_fh.read()
-                host_fh.close()
-                
+
             for line in data.split("\n"):
                 line = line.strip()
                 if line is None or " " not in line:

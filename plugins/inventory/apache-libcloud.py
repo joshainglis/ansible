@@ -302,10 +302,9 @@ class LibcloudInventory(object):
         object
         '''
 
-        cache = open(self.cache_path_cache, 'r')
-        json_inventory = cache.read()
+        with open(self.cache_path_cache, 'r') as cache:
+            json_inventory = cache.read()
         return json_inventory
-
 
     def load_index_from_cache(self):
         '''
@@ -316,17 +315,14 @@ class LibcloudInventory(object):
         json_index = cache.read()
         self.index = json.loads(json_index)
 
-
     def write_to_cache(self, data, filename):
         '''
         Writes data in JSON format to a file
         '''
 
         json_data = self.json_format_dict(data, True)
-        cache = open(filename, 'w')
-        cache.write(json_data)
-        cache.close()
-
+        with open(filename, 'w') as cache:
+            cache.write(json_data)
 
     def to_safe(self, word):
         '''
@@ -348,8 +344,9 @@ class LibcloudInventory(object):
         else:
             return json.dumps(data)
 
+
 def main():
     LibcloudInventory()
 
 if __name__ == '__main__':
-	main()
+    main()

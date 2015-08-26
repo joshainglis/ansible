@@ -136,9 +136,8 @@ class Connection(object):
         response = response['data']
         response = base64.b64decode(response)        
 
-        fh = open(out_path, "w")
-        fh.write(response)
-        fh.close()
+        with open(out_path, "w") as fh:
+            fh.write(response)
 
     def close(self):
         ''' terminate the connection '''

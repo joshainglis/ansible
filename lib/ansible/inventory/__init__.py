@@ -105,9 +105,8 @@ class Inventory(object):
                 # class we can show a more apropos error
                 shebang_present = False
                 try:
-                    inv_file = open(host_list)
-                    first_line = inv_file.readlines()[0]
-                    inv_file.close()
+                    with open(host_list) as inv_file:
+                        first_line = inv_file.readlines()[0]
                     if first_line.startswith('#!'):
                         shebang_present = True
                 except:
@@ -537,9 +536,8 @@ class Inventory(object):
             # allow Unix style @filename data
             for x in subset_pattern:
                 if x.startswith("@"):
-                    fd = open(x[1:])
-                    results.extend(fd.read().split("\n"))
-                    fd.close()
+                    with open(x[1:]) as fd:
+                        results.extend(fd.read().split("\n"))
                 else:
                     results.append(x)
             self._subset = results

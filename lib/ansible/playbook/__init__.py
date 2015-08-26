@@ -662,9 +662,8 @@ class PlayBook(object):
             if not os.path.exists(basedir):
                 os.makedirs(basedir)
 
-            fd = open(filename, 'w')
-            fd.write(buf.getvalue())
-            fd.close()
+            with open(filename, 'w') as fd:
+                fd.write(buf.getvalue())
         except:
             ansible.callbacks.display(
                 "\nERROR: could not create retry file. Check the value of \n"

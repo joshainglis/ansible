@@ -543,9 +543,8 @@ class AnsibleModule(object):
         NFS or other 'special' fs  mount point, otherwise the return will be (False, None).
         """
         try:
-            f = open('/proc/mounts', 'r')
-            mount_data = f.readlines()
-            f.close()
+            with open('/proc/mounts', 'r') as f:
+                mount_data = f.readlines()
         except:
             return (False, None)
         path_mount_point = self.find_mount_point(path)
@@ -1275,12 +1274,11 @@ class AnsibleModule(object):
             self.fail_json(msg="attempted to take checksum of directory: %s" % filename)
         digest = digest_method
         blocksize = 64 * 1024
-        infile = open(filename, 'rb')
-        block = infile.read(blocksize)
-        while block:
-            digest.update(block)
+        with open(filename, 'rb') as infile:
             block = infile.read(blocksize)
-        infile.close()
+            while block:
+                digest.update(block)
+                block = infile.read(blocksize)
         return digest.hexdigest()
 
     def md5(self, filename):
@@ -1589,9 +1587,8 @@ class AnsibleModule(object):
 
     def append_to_file(self, filename, str):
         filename = os.path.expandvars(os.path.expanduser(filename))
-        fh = open(filename, 'a')
-        fh.write(str)
-        fh.close()
+        with open(filename, 'a') as fh:
+            fh.write(str)
 
     def pretty_bytes(self,size):
         ranges = (
@@ -1608,6 +1605,7 @@ class AnsibleModule(object):
             if size >= limit:
                 break
         return '%.2f %s' % (float(size)/ limit, suffix)
+
 
 def get_module_path():
     return os.path.dirname(os.path.realpath(__file__))

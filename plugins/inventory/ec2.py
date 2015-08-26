@@ -760,10 +760,9 @@ class Ec2Inventory(object):
         ''' Reads the inventory from the cache file and returns it as a JSON
         object '''
 
-        cache = open(self.cache_path_cache, 'r')
-        json_inventory = cache.read()
+        with open(self.cache_path_cache, 'r') as cache:
+            json_inventory = cache.read()
         return json_inventory
-
 
     def load_index_from_cache(self):
         ''' Reads the index from the cache file sets self.index '''
@@ -777,17 +776,14 @@ class Ec2Inventory(object):
         ''' Writes data in JSON format to a file '''
 
         json_data = self.json_format_dict(data, True)
-        cache = open(filename, 'w')
-        cache.write(json_data)
-        cache.close()
-
+        with open(filename, 'w') as cache:
+            cache.write(json_data)
 
     def to_safe(self, word):
         ''' Converts 'bad' characters in a string to underscores so they can be
         used as Ansible groups '''
 
         return re.sub("[^A-Za-z0-9\-]", "_", word)
-
 
     def json_format_dict(self, data, pretty=False):
         ''' Converts a dict to a JSON object and dumps it as a formatted

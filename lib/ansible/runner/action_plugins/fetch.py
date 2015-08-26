@@ -144,9 +144,8 @@ class ActionModule(object):
             if remote_data is None:
                 conn.fetch_file(source, dest)
             else:
-                f = open(dest, 'w')
-                f.write(remote_data)
-                f.close()
+                with open(dest, 'w') as f:
+                    f.write(remote_data)
             new_checksum = utils.secure_hash(dest)
             # For backwards compatibility.  We'll return None on FIPS enabled
             # systems

@@ -32,9 +32,8 @@ class InventoryParserYaml(object):
         sys.stderr.write("WARNING: YAML inventory files are deprecated in 0.6 and will be removed in 0.7, to migrate" +
             " download and run https://github.com/ansible/ansible/blob/devel/examples/scripts/yaml_to_ini.py\n")
 
-        fh = open(filename)
-        data = fh.read()
-        fh.close()
+        with open(filename) as fh:
+            data = fh.read()
         self._hosts = {}
         self._parse(data)
 
@@ -172,9 +171,8 @@ if __name__ == "__main__":
             os.makedirs(groupfiledir)
         groupfile = os.path.join(groupfiledir, group_name)
         print "* writing group variables for %s into %s" % (group_name, groupfile)
-        groupfh = open(groupfile, 'w')
-        groupfh.write(yaml.dump(record.get_variables()))
-        groupfh.close()
+        with open(groupfile, 'w') as groupfh:
+            groupfh.write(yaml.dump(record.get_variables()))
 
     for (host_name, host_record) in yamlp._hosts.iteritems():
         hostfiledir = os.path.join(dirname, "host_vars")
@@ -183,19 +181,16 @@ if __name__ == "__main__":
             os.makedirs(hostfiledir)
         hostfile = os.path.join(hostfiledir, host_record.name)
         print "* writing host variables for %s into %s" % (host_record.name, hostfile)
-        hostfh = open(hostfile, 'w')
-        hostfh.write(yaml.dump(host_record.get_variables()))
-        hostfh.close()
-
+        with open(hostfile, 'w') as hostfh:
+            hostfh.write(yaml.dump(host_record.get_variables()))
 
     # also need to keep a hash of variables per each host
     # and variables per each group
     # and write those to disk
 
     newfilepath = os.path.join(dirname, "hosts.new")
-    fdh = open(newfilepath, 'w')
-    fdh.write(result)
-    fdh.close()
+    with open(newfilepath, 'w') as fdh:
+        fdh.write(result)
 
     print "* COMPLETE: review your new inventory file and replace your original when ready"
     print "*           new inventory file saved as %s" % newfilepath

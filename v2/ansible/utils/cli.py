@@ -168,14 +168,12 @@ def _git_repo_info(repo_path):
                     repo_path = os.path.join(repo_path[:-4], gitdir)
             except (IOError, AttributeError):
                 return ''
-        f = open(os.path.join(repo_path, "HEAD"))
-        branch = f.readline().split('/')[-1].rstrip("\n")
-        f.close()
+        with open(os.path.join(repo_path, "HEAD")) as f:
+            branch = f.readline().split('/')[-1].rstrip("\n")
         branch_path = os.path.join(repo_path, "refs", "heads", branch)
         if os.path.exists(branch_path):
-            f = open(branch_path)
-            commit = f.readline()[:10]
-            f.close()
+            with open(branch_path) as f:
+                commit = f.readline()[:10]
         else:
             # detached HEAD
             commit = branch[:10]
@@ -193,6 +191,7 @@ def _git_repo_info(repo_path):
         result = ''
     return result
 
+
 def _gitinfo():
     basedir = os.path.join(os.path.dirname(__file__), '..', '..', '..')
     repo_path = os.path.join(basedir, '.git')
@@ -200,15 +199,14 @@ def _gitinfo():
     submodules = os.path.join(basedir, '.gitmodules')
     if not os.path.exists(submodules):
        return result
-    f = open(submodules)
-    for line in f:
-        tokens = line.strip().split(' ')
-        if tokens[0] == 'path':
-            submodule_path = tokens[2]
-            submodule_info =_git_repo_info(os.path.join(basedir, submodule_path, '.git'))
-            if not submodule_info:
-                submodule_info = ' not found - use git submodule update --init ' + submodule_path
-            result += "\n  {0}: {1}".format(submodule_path, submodule_info)
-    f.close()
+    with open(submodules) as f:
+        for line in f:
+            tokens = line.strip().split(' ')
+            if tokens[0] == 'path':
+                submodule_path = tokens[2]
+                submodule_info =_git_repo_info(os.path.join(basedir, submodule_path, '.git'))
+                if not submodule_info:
+                    submodule_info = ' not found - use git submodule update --init ' + submodule_path
+                result += "\n  {0}: {1}".format(submodule_path, submodule_info)
     return result
 

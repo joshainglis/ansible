@@ -397,8 +397,8 @@ class CollinsInventory(object):
         """ Reads the index from the cache file sets self.index """
 
         try:
-            cache = open(self.cache_path_inventory, 'r')
-            json_inventory = cache.read()
+            with open(self.cache_path_inventory, 'r') as cache:
+                json_inventory = cache.read()
             self.inventory = json.loads(json_inventory)
             return True
         except:
@@ -425,9 +425,8 @@ class CollinsInventory(object):
         """ Writes data in JSON format to a specified file. """
 
         json_data = self.json_format_dict(data, self.args.pretty)
-        cache = open(filename, 'w')
-        cache.write(json_data)
-        cache.close()
+        with open(filename, 'w') as cache:
+            cache.write(json_data)
 
     def to_safe(self, word):
         """ Converts 'bad' characters in a string to underscores so they

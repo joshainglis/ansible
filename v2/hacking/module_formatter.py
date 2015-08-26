@@ -111,9 +111,8 @@ def write_data(text, options, outputname, module):
     if options.output_dir is not None:
         fname = os.path.join(options.output_dir, outputname % module)
         fname = fname.replace(".py","")
-        f = open(fname, 'w')
-        f.write(text.encode('utf-8'))
-        f.close()
+        with open(fname, 'w') as f:
+            f.write(text.encode('utf-8'))
     else:
         print text
 
@@ -321,75 +320,75 @@ def process_category(category, categories, options, env, template, outputname):
         aliases = categories['_aliases']
 
     category_file_path = os.path.join(options.output_dir, "list_of_%s_modules.rst" % category)
-    category_file = open(category_file_path, "w")
-    print "*** recording category %s in %s ***" % (category, category_file_path)
+    with open(category_file_path, "w") as category_file:
+        print "*** recording category %s in %s ***" % (category, category_file_path)
 
-    # TODO: start a new category file
+        # TODO: start a new category file
 
-    category = category.replace("_"," ")
-    category = category.title()
+        category = category.replace("_"," ")
+        category = category.title()
 
-    modules = []
-    deprecated = []
-    core = []
-    for module in module_map.keys():
+        modules = []
+        deprecated = []
+        core = []
+        for module in module_map.keys():
 
-        if isinstance(module_map[module], dict):
-            for mod in module_map[module].keys():
-                if mod.startswith("_"):
-                    mod = mod.replace("_","",1)
-                    deprecated.append(mod)
-                elif '/core/' in module_map[module][mod]:
-                    core.append(mod)
-        else:
-            if module.startswith("_"):
-                module = module.replace("_","",1)
-                deprecated.append(module)
-            elif '/core/' in module_map[module]:
-                core.append(module)
+            if isinstance(module_map[module], dict):
+                for mod in module_map[module].keys():
+                    if mod.startswith("_"):
+                        mod = mod.replace("_","",1)
+                        deprecated.append(mod)
+                    elif '/core/' in module_map[module][mod]:
+                        core.append(mod)
+            else:
+                if module.startswith("_"):
+                    module = module.replace("_","",1)
+                    deprecated.append(module)
+                elif '/core/' in module_map[module]:
+                    core.append(module)
 
-        modules.append(module)
+            modules.append(module)
 
-    modules.sort()
+        modules.sort()
 
-    category_header = "%s Modules" % (category.title())
-    underscores = "`" * len(category_header)
+        category_header = "%s Modules" % (category.title())
+        underscores = "`" * len(category_header)
 
-    category_file.write("""\
+        category_file.write("""\
 %s
 %s
 
 .. toctree:: :maxdepth: 1
 
 """ % (category_header, underscores))
-    sections = []
-    for module in modules:
-        if module in module_map and isinstance(module_map[module], dict):
-            sections.append(module)
-            continue
-        else:
-            print_modules(module, category_file, deprecated, core, options, env, template, outputname, module_map, aliases)
+        sections = []
+        for module in modules:
+            if module in module_map and isinstance(module_map[module], dict):
+                sections.append(module)
+                continue
+            else:
+                print_modules(module, category_file, deprecated, core, options, env, template, outputname, module_map, aliases)
 
-    sections.sort()
-    for section in sections:
-        category_file.write("\n%s\n%s\n\n" % (section.replace("_"," ").title(),'-' * len(section)))
-        category_file.write(".. toctree:: :maxdepth: 1\n\n")
+        sections.sort()
+        for section in sections:
+            category_file.write("\n%s\n%s\n\n" % (section.replace("_"," ").title(),'-' * len(section)))
+            category_file.write(".. toctree:: :maxdepth: 1\n\n")
 
-        section_modules = module_map[section].keys()
-        section_modules.sort()
-        #for module in module_map[section]:
-        for module in section_modules:
-            print_modules(module, category_file, deprecated, core, options, env, template, outputname, module_map[section], aliases)
+            section_modules = module_map[section].keys()
+            section_modules.sort()
+            #for module in module_map[section]:
+            for module in section_modules:
+                print_modules(module, category_file, deprecated, core, options, env, template, outputname, module_map[section], aliases)
 
-    category_file.write("""\n\n
+        category_file.write("""\n\n
 .. note::
     - %s: This marks a module as deprecated, which means a module is kept for backwards compatibility but usage is discouraged.  The module documentation details page may explain more about this rationale.
     - %s: This marks a module as 'extras', which means it ships with ansible but may be a newer module and possibly (but not neccessarily) less activity maintained than 'core' modules.
     - Tickets filed on modules are filed to different repos than those on the main open source project. Core module tickets should be filed at `ansible/ansible-modules-core on GitHub <http://github.com/ansible/ansible-modules-core>`_, extras tickets to `ansible/ansible-modules-extras on GitHub <http://github.com/ansible/ansible-modules-extras>`_
 """ % (DEPRECATED, NOTCORE))
-    category_file.close()
 
-    # TODO: end a new category file
+
+        # TODO: end a new category file
 
 #####################################################################################
 
@@ -423,20 +422,19 @@ def main():
     category_names.sort()
 
     category_list_path = os.path.join(options.output_dir, "modules_by_category.rst")
-    category_list_file = open(category_list_path, "w")
-    category_list_file.write("Module Index\n")
-    category_list_file.write("============\n")
-    category_list_file.write("\n\n")
-    category_list_file.write(".. toctree::\n")
-    category_list_file.write("   :maxdepth: 1\n\n")
+    with open(category_list_path, "w") as category_list_file:
+        category_list_file.write("Module Index\n")
+        category_list_file.write("============\n")
+        category_list_file.write("\n\n")
+        category_list_file.write(".. toctree::\n")
+        category_list_file.write("   :maxdepth: 1\n\n")
 
-    for category in category_names:
-        if category.startswith("_"):
-            continue
-        category_list_file.write("   list_of_%s_modules\n" % category)
-        process_category(category, categories, options, env, template, outputname)
+        for category in category_names:
+            if category.startswith("_"):
+                continue
+            category_list_file.write("   list_of_%s_modules\n" % category)
+            process_category(category, categories, options, env, template, outputname)
 
-    category_list_file.close()
 
 if __name__ == '__main__':
     main()

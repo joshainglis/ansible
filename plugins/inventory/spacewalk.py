@@ -73,10 +73,9 @@ def spacewalk_report(name):
     if not os.path.exists(cache_filename) or \
             (time.time() - os.stat(cache_filename).st_mtime) > CACHE_AGE:
         # Update the cache
-        fh = open(cache_filename, 'w')
-        p = subprocess.Popen([SW_REPORT, name], stdout=fh)
+        with open(cache_filename, 'w') as fh:
+            p = subprocess.Popen([SW_REPORT, name], stdout=fh)
         p.wait()
-        fh.close()
 
     lines = open(cache_filename, 'r').readlines()
     keys = lines[0].strip().split(',')
